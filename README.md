@@ -98,9 +98,10 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-Соберём и запустим. 
-
-<span style="color:red; font-weight: bold">ВНИМАНИЕ! Запускать от имени root, иначе не удастся получить доступ к пространству I/O.</span>
+Соберём и запустим.
+<span style="color:red; font-weight: bold">
+ВНИМАНИЕ! Запускать от имени root, иначе не удастся получить доступ к пространству I/O
+</span>
 
 ```
 # gcc main.c -lvt1211_gpio -o vt1211_test
@@ -125,9 +126,10 @@ int       vt_init(uint8_t ports);
 Инициализация контроллера.
 
 **Параметры**
-uint8_t ports - Какие порты использовать
+- uint8_t ports - Какие порты использовать
 
 **Возвращаемое значение**
+
 Смотри defines
 
 ---
@@ -162,8 +164,8 @@ void      vt_port_mode(uint8_t port, uint8_t mode);
 Установка режим работы порта. На ввод или вывод
 
 **Параметры**
-uint8_t port - Номер порта
-uint8_t mode - Режим работы порта
+- uint8_t port - Номер порта
+- uint8_t mode - Режим работы порта
 
 ---
 
@@ -173,8 +175,8 @@ void      vt_port_polarity(uint8_t port, uint8_t polarity);
 Инверсия разрядов порта
 
 **Параметры**
-uint8_t port - Номер порта
-uint8_t polarity - Прямой/инверсный
+- uint8_t port - Номер порта
+- uint8_t polarity - Прямой/инверсный
 
 ---
 
@@ -185,8 +187,8 @@ void      vt_port_write(uint8_t port, uint8_t data);
 Запись в порт
 
 **Параметры**
-uint8_t port - Номер порта
-uint8_t data - Данные
+- uint8_t port - Номер порта
+- uint8_t data - Данные
 
 ---
 
@@ -197,6 +199,7 @@ uint8_t   vt_port_read(uint8_t port);
 Чтение порта
 
 **Возвращаемое значение**
+
 Прочитанные данные
 
 ---
@@ -208,9 +211,9 @@ void      vt_pin_mode(uint8_t port, uint8_t pin, uint8_t mode);
 Режим работы пина. Ввод или вывод
 
 **Параметры**
-uint8_t port - Номер порта
-uint8_t pin - Номер пина
-uint8_t mode - Режим работы пина
+- uint8_t port - Номер порта
+- uint8_t pin - Номер пина
+- uint8_t mode - Режим работы пина
 
 ---
 
@@ -221,9 +224,9 @@ void      vt_pin_polarity(uint8_t port, uint8_t pin, uint8_t polarity);
 Инверсия пина
 
 **Параметры**
-uint8_t port - Номер порта
-uint8_t pin - Номер пина
-uint8_t polarity - Прямой/инверсный
+- uint8_t port - Номер порта
+- uint8_t pin - Номер пина
+- uint8_t polarity - Прямой/инверсный
 
 ---
 
@@ -234,9 +237,9 @@ void      vt_pin_set(uint8_t port, uint8_t pin, uint8_t value);
 Установить пин в 0 или 1
 
 **Параметры**
-uint8_t port - Номер порта
-uint8_t pin - Номер пина
-uint8_t value - 0 или 1
+- uint8_t port - Номер порта
+- uint8_t pin - Номер пина
+- uint8_t value - 0 или 1
 
 ---
 
@@ -247,10 +250,11 @@ uint8_t   vt_pin_get(uint8_t port, uint8_t pin);
 Прочитать значение пина
 
 **Параметры**
-uint8_t port - Номер порта
-uint8_t pin - Номер пина
+- uint8_t port - Номер порта
+- uint8_t pin - Номер пина
 
 **Возвращаемое значение**
+
 Значение пина
 
 ---
