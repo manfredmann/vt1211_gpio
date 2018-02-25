@@ -20,7 +20,7 @@ Userspace библиотека для работы с портами GPIO Super 
 
 ```
 # cd /usr/local/src
-# git clone
+# git clone https://github.com/manfredmann/vt1211_gpio
 # cd vt1211_gpio
 # autoreconf -vi
 # ./configure --prefix=/usr/local
