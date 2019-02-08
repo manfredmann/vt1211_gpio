@@ -56,9 +56,6 @@
 #define VT_INIT_NOT_FOUND             0x01
 #define VT_INIT_NO_PORT               0x02
 
-#define VT_CIR                        0x2E
-#define VT_CDR                        0x2F
-
 #define VT_ENTER_CONFIG               0x87
 #define VT_EXIT_CONFIG                0xAA
 
@@ -107,7 +104,7 @@
 #define VT_PIN_6                     (0x1 << 6)
 #define VT_PIN_7                     (0x1 << 7)
 
-int       vt_init(uint8_t ports);
+int       vt_init(uint8_t ports, uint16_t cir, uint16_t cdr);
 uint8_t   vt_get_dev_id();
 uint8_t   vt_get_dev_rev();
 uint16_t  vt_get_baddr();

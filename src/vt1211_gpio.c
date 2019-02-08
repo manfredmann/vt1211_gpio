@@ -27,30 +27,32 @@ static struct {
   uint16_t  baddr;
   uint8_t   dev_id;
   uint8_t   dev_rev;
+  uint16_t  cir;
+  uint16_t  cdr;
 } gpio_data;
 
 void vt_config_mode() {
-  io_write8(VT_CIR, VT_ENTER_CONFIG);
-  io_write8(VT_CIR, VT_ENTER_CONFIG);
+  io_write8(gpio_data.cir, VT_ENTER_CONFIG);
+  io_write8(gpio_data.cir, VT_ENTER_CONFIG);
 }
 
 void vt_config_mode_exit() {
-  io_write8(VT_CIR, VT_EXIT_CONFIG);
+  io_write8(gpio_data.cir, VT_EXIT_CONFIG);
 }
 
 void vt_config_mode_gpio() {
-  io_write8(VT_CIR, VT_CONFIG_LDN);
-  io_write8(VT_CDR, VT_LDN_GPIO);
+  io_write8(gpio_data.cir, VT_CONFIG_LDN);
+  io_write8(gpio_data.cdr, VT_LDN_GPIO);
 }
 
 uint16_t vt_get_id_rev() {
   vt_config_mode();
 
-  io_write8(VT_CIR, VT_CONFIG_DEV_ID);
-  uint8_t id = io_read8(VT_CDR);
+  io_write8(gpio_data.cir, VT_CONFIG_DEV_ID);
+  uint8_t id = io_read8(gpio_data.cdr);
 
-  io_write8(VT_CIR, VT_CONFIG_DEV_REV);
-  uint8_t rev = io_read8(VT_CDR);
+  io_write8(gpio_data.cir, VT_CONFIG_DEV_REV);
+  uint8_t rev = io_read8(gpio_data.cdr);
 
   vt_config_mode_exit();
 
@@ -62,17 +64,17 @@ void vt_port_as_gpio(uint8_t port) {
 
   switch(port) {
     case VT_CONFIG_PORT_1: {
-      io_write8(VT_CIR, VT_CONFIG_GPIO_P1_PIN_SELECT);
-      io_write8(VT_CDR, 0xFF);
+      io_write8(gpio_data.cir, VT_CONFIG_GPIO_P1_PIN_SELECT);
+      io_write8(gpio_data.cdr, 0xFF);
     }
     break;
     case VT_CONFIG_PORT_3_6: {
-      io_write8(VT_CIR, VT_CONFIG_GPIO_P2_PIN_SELECT);
-      uint8_t d_tmp = io_read8(VT_CDR);
+      io_write8(gpio_data.cir, VT_CONFIG_GPIO_P2_PIN_SELECT);
+      uint8_t d_tmp = io_read8(gpio_data.cdr);
       d_tmp |= 0b00111111;
 
-      io_write8(VT_CIR, VT_CONFIG_GPIO_P2_PIN_SELECT);
-      io_write8(VT_CDR, d_tmp);
+      io_write8(gpio_data.cir, VT_CONFIG_GPIO_P2_PIN_SELECT);
+      io_write8(gpio_data.cdr, d_tmp);
     }
     break;
   }
@@ -84,11 +86,11 @@ uint16_t vt_gpio_get_baddr() {
   vt_config_mode();
   vt_config_mode_gpio();
 
-  io_write8(VT_CIR, VT_LDN_GPIO_BADDR_B1);
-  uint8_t b1 = io_read8(VT_CDR);
+  io_write8(gpio_data.cir, VT_LDN_GPIO_BADDR_B1);
+  uint8_t b1 = io_read8(gpio_data.cdr);
 
-  io_write8(VT_CIR, VT_LDN_GPIO_BADDR_B2);
-  uint8_t b2 = io_read8(VT_CDR);
+  io_write8(gpio_data.cir, VT_LDN_GPIO_BADDR_B2);
+  uint8_t b2 = io_read8(gpio_data.cdr);
 
   vt_config_mode_exit();
 
@@ -100,13 +102,15 @@ void vt_gpio_activate() {
   vt_config_mode();
   vt_config_mode_gpio();
 
-  io_write8(VT_CIR, VT_LDN_GPIO_ACTIVATE);
-  io_write8(VT_CDR, 0x01);
+  io_write8(gpio_data.cir, VT_LDN_GPIO_ACTIVATE);
+  io_write8(gpio_data.cdr, 0x01);
 
   vt_config_mode_exit();
 }
 
-int vt_init(uint8_t ports) {
+int vt_init(uint8_t ports, uint16_t cir, uint16_t cdr) {
+  gpio_data.cir = cir;
+  gpio_data.cdr = cdr;
   uint16_t id_rev = vt_get_id_rev();
   gpio_data.dev_id  = ((id_rev & 0xFF00) >> 8);
   gpio_data.dev_rev = (id_rev & 0x00FF);
@@ -153,11 +157,11 @@ void vt_port_mode(uint8_t port, uint8_t mode) {
   vt_config_mode();
   vt_config_mode_gpio();
 
-  io_write8(VT_CIR, VT_LDN_GPIO_PORT_SELECT);
-  io_write8(VT_CDR, port);
+  io_write8(gpio_data.cir, VT_LDN_GPIO_PORT_SELECT);
+  io_write8(gpio_data.cdr, port);
 
-  io_write8(VT_CIR, VT_LDN_GPIO_MODE_CONFIG);
-  io_write8(VT_CDR, mode);
+  io_write8(gpio_data.cir, VT_LDN_GPIO_MODE_CONFIG);
+  io_write8(gpio_data.cdr, mode);
 
   vt_config_mode_exit();
 }
@@ -166,11 +170,11 @@ void vt_port_polarity(uint8_t port, uint8_t polarity) {
   vt_config_mode();
   vt_config_mode_gpio();
 
-  io_write8(VT_CIR, VT_LDN_GPIO_PORT_SELECT);
-  io_write8(VT_CDR, port);
+  io_write8(gpio_data.cir, VT_LDN_GPIO_PORT_SELECT);
+  io_write8(gpio_data.cdr, port);
 
-  io_write8(VT_CIR, VT_LDN_GPIO_POLAR_CONFIG);
-  io_write8(VT_CDR, polarity);
+  io_write8(gpio_data.cir, VT_LDN_GPIO_POLAR_CONFIG);
+  io_write8(gpio_data.cdr, polarity);
 
   vt_config_mode_exit();
 }
@@ -187,11 +191,11 @@ void vt_pin_mode(uint8_t port, uint8_t pin, uint8_t mode) {
   vt_config_mode();
   vt_config_mode_gpio();
 
-  io_write8(VT_CIR, VT_LDN_GPIO_PORT_SELECT);
-  io_write8(VT_CDR, port);
+  io_write8(gpio_data.cir, VT_LDN_GPIO_PORT_SELECT);
+  io_write8(gpio_data.cdr, port);
 
-  io_write8(VT_CIR, VT_LDN_GPIO_MODE_CONFIG);
-  uint8_t m_data = io_read8(VT_CDR);
+  io_write8(gpio_data.cir, VT_LDN_GPIO_MODE_CONFIG);
+  uint8_t m_data = io_read8(gpio_data.cdr);
 
   if (mode == VT_PIN_OUTPUT) {
     m_data |= pin;
@@ -199,8 +203,8 @@ void vt_pin_mode(uint8_t port, uint8_t pin, uint8_t mode) {
     m_data &= ~(pin);
   }
 
-  io_write8(VT_CIR, VT_LDN_GPIO_MODE_CONFIG);
-  io_write8(VT_CDR, m_data);
+  io_write8(gpio_data.cir, VT_LDN_GPIO_MODE_CONFIG);
+  io_write8(gpio_data.cdr, m_data);
 
   vt_config_mode_exit();
 }
@@ -209,11 +213,11 @@ void vt_pin_polarity(uint8_t port, uint8_t pin, uint8_t polarity) {
   vt_config_mode();
   vt_config_mode_gpio();
 
-  io_write8(VT_CIR, VT_LDN_GPIO_PORT_SELECT);
-  io_write8(VT_CDR, port);
+  io_write8(gpio_data.cir, VT_LDN_GPIO_PORT_SELECT);
+  io_write8(gpio_data.cdr, port);
 
-  io_write8(VT_CIR, VT_LDN_GPIO_POLAR_CONFIG);
-  uint8_t p_data = io_read8(VT_CDR);
+  io_write8(gpio_data.cir, VT_LDN_GPIO_POLAR_CONFIG);
+  uint8_t p_data = io_read8(gpio_data.cdr);
 
   if (polarity == VT_PIN_PL_INVERSE) {
     p_data |= pin;
@@ -221,8 +225,8 @@ void vt_pin_polarity(uint8_t port, uint8_t pin, uint8_t polarity) {
     p_data &= ~(pin);
   }
 
-  io_write8(VT_CIR, VT_LDN_GPIO_POLAR_CONFIG);
-  io_write8(VT_CDR, p_data);
+  io_write8(gpio_data.cir, VT_LDN_GPIO_POLAR_CONFIG);
+  io_write8(gpio_data.cdr, p_data);
 
   vt_config_mode_exit();
 }
