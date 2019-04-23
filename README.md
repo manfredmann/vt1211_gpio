@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 
   printf("VT1211 Init:\t\t");
 
-  int r = vt_init(VT_CONFIG_PORT_1 | VT_CONFIG_PORT_3_6);
+  int r = vt_init(VT_CONFIG_PORT_1 | VT_CONFIG_PORT_3_6, 0x2E, 0x2F);
 
   switch (r) {
     case VT_INIT_NOT_FOUND: {
@@ -89,9 +89,9 @@ int main(int argc, char *argv[]) {
 
   while(1) {
     vt_pin_hi(VT_PORT_1, VT_PIN_0);
-    usleep(2000);
+    usleep(1000);
     vt_pin_low(VT_PORT_1, VT_PIN_0);
-    usleep(2000);
+    usleep(1000);
   }
 
   return EXIT_SUCCESS;
